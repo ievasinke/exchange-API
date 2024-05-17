@@ -31,31 +31,25 @@ $inputParts = explode(" ", $inputAmount);
 if (count($inputParts) !== 2) {
     exit("Invalid input format. Please enter amount and currency separated by space.\n");
 }
-//var_dump($input);die;
 $amount = $inputParts[0];
 $passingCurrency = $inputParts[1];
-
 $url = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/$passingCurrency.json";
 $fallBackUrl = "https://latest.currency-api.pages.dev/v1/currencies/$passingCurrency.json";
 
 $jsonData = json_decode(getCurrency($url));
-
 if ($jsonData === null) {
     $jsonData = json_decode(getCurrency($fallBackUrl));
 }
-
 if ($jsonData === null || !isset($jsonData->$passingCurrency)) {
     exit("Could not retrieve currency data for $passingCurrency.\n");
 }
 
 $rate = $jsonData->$passingCurrency->$conversionCurrency ?? null;
-
 if ($rate === null) {
     exit("Could not find exchange rate for $passingCurrency to $conversionCurrency.\n");
 }
 
 $exchangedAmount = number_format(($amount * $rate), 2);
-
 echo "$amount "
     . strtoupper($passingCurrency)
     . " are $exchangedAmount "
